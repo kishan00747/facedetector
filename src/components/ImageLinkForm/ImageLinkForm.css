@@ -1,0 +1,19 @@
+#link-box {
+	background: linear-gradient(#ffffff 50%, rgba(255,255,255,0) 0) 0 0,
+	radial-gradient(circle closest-side, #FFFFFF 53%, rgba(255,255,255,0) 0) 0 0,
+	radial-gradient(circle closest-side, #FFFFFF 50%, rgba(255,255,255,0) 0) 55px 0 #48B;
+	background-size: 110px 125px;
+	background-repeat: repeat-x;
+
+	  display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    padding: 10px;
+    width: 70%;
+    border-radius: 10px;
+}
+
+.display-center {
+  display:flex;
+  justify-content: center;
+}
