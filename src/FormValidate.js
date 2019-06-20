@@ -1,6 +1,6 @@
 const isName = (input) => {
 
-	var re = /^[a-zA-Z]{2,20}$/g;
+	var re = /^[a-zA-Z ]{2,20}$/g;
 	
 	return (input.match(re));
 }

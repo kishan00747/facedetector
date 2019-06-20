@@ -40,9 +40,6 @@ class App extends Component {
 
   componentDidMount() {
 
-    fetch('http://localhost:3001/')
-     .then(response => response.json())
-     .then(console.log);
 
   }
 
@@ -127,7 +124,6 @@ class App extends Component {
                     })
                     .then(response => response.json())
                     .then(count => {
-                        console.log(count);
                         this.setState(Object.assign(this.state.user, {entries: count}));
                     });
                 }
@@ -143,7 +139,15 @@ class App extends Component {
 
   onRouteChange = (route) => {
 
-    this.setState({route: route});
+    if(route === 'signout')
+    {
+      this.setState(initialState);
+    }
+    else
+    {
+      this.setState({route: route});
+    }
+    
 
   }
 
@@ -151,12 +155,7 @@ class App extends Component {
   routeSwitch = (route) => {
     switch(route)
     {
-       case 'signout':
-        {
-            this.setState(initialState);
-            return <SignIn onRouteChange={this.onRouteChange} loadUser={this.loadUser}/>
-
-        }
+       
        case 'signin':
        {
           return <SignIn onRouteChange={this.onRouteChange} loadUser={this.loadUser}/>
@@ -164,7 +163,7 @@ class App extends Component {
       
        case 'signupSuccess':
        {
-         return <SignIn showSignUpSuccess={true} onRouteChange={this.onRouteChange} />
+         return <SignIn showSignUpSuccess={true} onRouteChange={this.onRouteChange} loadUser={this.loadUser} />
        }
       
        case 'home':
