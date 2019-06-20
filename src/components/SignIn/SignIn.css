@@ -29,5 +29,24 @@
 
    }
 
+   .error-message
+   {
+
+      color: red;
+      padding: 5px;
+      border: 2px solid red;
+      border-radius: 5px;
+   }
+
+
+   .success-message
+   {
+
+      color: green;
+      padding: 5px;
+      border: 2px solid green;
+      border-radius: 5px;
+   }
+
 
   

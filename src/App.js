@@ -9,6 +9,7 @@ import particlesConfig from './particles.json';
 import Clarifai from 'clarifai';
 import SignIn from './components/SignIn/SignIn';
 import SignUp from './components/SignUp/SignUp';
+import Rank from './components/Rank/Rank';
 
 
 const app = new Clarifai.App({
@@ -18,15 +19,32 @@ const app = new Clarifai.App({
 class App extends Component {
 
 
+  const initialState = {
+        imageUrl: '',
+        boxArray: [],
+        route: 'signin',
+        user: {}
+      };
+
   constructor()
   {
       super();
-      this.state = {
-        imageUrl: '',
-        boxArray: [],
-        route: 'signin' 
-      };
+      this.state = initialState;
   }
+
+  loadUser = (user) => {
+      this.setState({user: user});
+  }
+
+
+  componentDidMount() {
+
+    fetch('http://localhost:3001/')
+     .then(response => response.json())
+     .then(console.log);
+
+  }
+
 
   checkURL = (url) =>  
   {
@@ -90,7 +108,26 @@ class App extends Component {
              this.setState({imageUrl: this.state.imageUrl})
 
              app.models.predict("a403429f2ddf4b49b307e318f00e528b", this.state.imageUrl)
-             .then(response => this.displayFaceBox(this.calculateFaceLocation(response)))
+             .then(response => {
+
+                this.displayFaceBox(this.calculateFaceLocation(response))
+                if(response)
+                {
+                    fetch("http://localhost:3001/image", {
+                      method: 'put',
+                      headers: {'Content-Type': 'application/json'},
+                      body: JSON.stringify({
+                        id: this.state.user.id
+                      })
+                    })
+                    .then(response => response.json())
+                    .then(count => {
+                        console.log(count);
+                        this.setState(Object.assign(this.state.user, {entries: count}));
+                    });
+                }
+
+              })  
              .catch(err => console.log(err));
          } 
   }
@@ -101,6 +138,43 @@ class App extends Component {
 
   }
 
+
+  routeSwitch = (route) => {
+    switch(route)
+    {
+       case 'signin':
+       {
+          return <SignIn onRouteChange={this.onRouteChange} loadUser={this.loadUser}/>
+       }
+      
+       case 'signupSuccess':
+       {
+         return <SignIn showSignUpSuccess={true} onRouteChange={this.onRouteChange} />
+       }
+      
+       case 'home':
+       {
+          return (
+            <div>
+            <Logo /> 
+            <Rank user={this.state.user.name} rank={this.state.user.entries}/> 
+            <ImageLinkForm updateImage={this.updateImage} detectImage={this.detectImage} />
+            <FaceRecognition boxArray={this.state.boxArray} imageURL={this.state.imageUrl} />
+          </div>
+          );
+       }
+      
+       case 'signup':
+       {
+          return <SignUp onRouteChange={this.onRouteChange} />
+       }
+      
+       default:
+       {
+          return <SignIn onRouteChange={this.onRouteChange} loadUser={this.loadUser}  />
+       }
+    }
+  }
   
 
 
@@ -109,24 +183,7 @@ class App extends Component {
       <div className="App">
           <Particles className='particles' params={particlesConfig} />
           <Navigation routeStatus={this.state.route} onRouteChange={this.onRouteChange} />
-          {
-            this.state.route === 'home' 
-            ? <div>
-                <Logo />  
-                <ImageLinkForm updateImage={this.updateImage} detectImage={this.detectImage} />
-                <FaceRecognition boxArray={this.state.boxArray} imageURL={this.state.imageUrl} />
-              </div>
-
-            : (
-                this.state.route === 'signin'
-                ? <SignIn onRouteChange={this.onRouteChange} />
-                : <SignUp onRouteChange={this.onRouteChange} />
-
-              )
-
-              
-          }
-           
+          {this.routeSwitch(this.state.route)}      
       </div>
     );
   }
