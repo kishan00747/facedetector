@@ -17,3 +17,14 @@
   display:flex;
   justify-content: center;
 }
+
+   .error-message
+   {
+      margin: auto;
+      width: 50%;
+      color: red;
+      padding: 5px;
+      border: 2px solid red;
+      border-radius: 5px;
+      background: #ffffff;
+   }

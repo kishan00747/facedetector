@@ -4,13 +4,14 @@ import './ImageLinkForm.css';
 
 const ImageLinkForm = (props) => {
 
-	const {updateImage, detectImage} = props;
+	const {updateImage, detectImage, urlError} = props;
 
 	return (
 
 		
 			<div className='tc'>
 				<p className='white-text flow-text'>This Magic Brain will detect faces in your pictures. Give it a try.</p>
+				{ urlError ? <p className="flow-text error-message">URL should be either JPEG, PNG or JPG format only!</p> : null }
 				<Row className='display-center br'>
 					<Col id='link-box' className='shadow-3'>
 						<div style={{width:'80%'}} >

@@ -10,7 +10,7 @@ const Navigation = ({onRouteChange, routeStatus}) => {
 		
 			{
 				routeStatus === 'home' 
-				? <NavItem onClick={() => onRouteChange('signin')} href='#'>Sign Out</NavItem>
+				? <NavItem onClick={() => onRouteChange('signout')} href='#'>Sign Out</NavItem>
 				: (
 				  	<div>
 				  		<NavItem onClick={() => onRouteChange('signin')} href='#'>Sign In</NavItem>

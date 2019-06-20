@@ -16,15 +16,16 @@ const app = new Clarifai.App({
  apiKey: '8d360775eaf1414aabc8116be7cd0c65'
 });
 
-class App extends Component {
-
-
-  const initialState = {
+const initialState = {
         imageUrl: '',
         boxArray: [],
         route: 'signin',
+        urlError: false,
         user: {}
       };
+
+class App extends Component {
+
 
   constructor()
   {
@@ -58,8 +59,13 @@ class App extends Component {
   {
       if(this.checkURL(event.target.value))
       {
-        this.setState({imageUrl: event.target.value, boxArray: []});
+        this.setState({imageUrl: event.target.value, urlError: false, boxArray: []});
       }
+      else
+      {
+        this.setState({imageUrl: '', urlError: true, boxArray: []});
+      }
+
   }
 
   calculateFaceLocation = (data) =>
@@ -105,8 +111,7 @@ class App extends Component {
     if(this.checkURL(this.state.imageUrl))
          {
              // console.log(this.state.imageUrl);
-             this.setState({imageUrl: this.state.imageUrl})
-
+             this.setState({imageUrl: this.state.imageUrl, urlError: false});
              app.models.predict("a403429f2ddf4b49b307e318f00e528b", this.state.imageUrl)
              .then(response => {
 
@@ -129,6 +134,10 @@ class App extends Component {
 
               })  
              .catch(err => console.log(err));
+         }
+         else
+         {
+              this.setState({urlError: true});
          } 
   }
 
@@ -142,6 +151,12 @@ class App extends Component {
   routeSwitch = (route) => {
     switch(route)
     {
+       case 'signout':
+        {
+            this.setState(initialState);
+            return <SignIn onRouteChange={this.onRouteChange} loadUser={this.loadUser}/>
+
+        }
        case 'signin':
        {
           return <SignIn onRouteChange={this.onRouteChange} loadUser={this.loadUser}/>
@@ -158,7 +173,7 @@ class App extends Component {
             <div>
             <Logo /> 
             <Rank user={this.state.user.name} rank={this.state.user.entries}/> 
-            <ImageLinkForm updateImage={this.updateImage} detectImage={this.detectImage} />
+            <ImageLinkForm updateImage={this.updateImage} detectImage={this.detectImage} urlError={this.state.urlError}/>
             <FaceRecognition boxArray={this.state.boxArray} imageURL={this.state.imageUrl} />
           </div>
           );
